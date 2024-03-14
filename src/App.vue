@@ -1,18 +1,31 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
-  </div>
-  <HelloWorld msg="Vite + Vue" />
+ <div>
+    <Filter :filters="filters" @change="onChange"></Filter>
+    <span v-for="item in currentConditions" :key="item.id">{{ mappingConditionDisplay(item) }}</span>
+ </div>
 </template>
+<script setup lang="ts">
+import { reactive } from 'vue' 
+import Filter from './components/Filter.vue'
+
+const filters = {
+  name: { label: '名称', type: 'input', value: '' },
+  age: { label: '年龄', type: 'singleSelect', value: ['男', '女'] },
+  ageRange: { label: '年龄范围', type: 'multipleSelect', value: ['1-10', '10-20'] }
+}
+
+const currentConditions = reactive([])
+
+function onChange(conditions: any) {
+  console.log('>>>>', conditions);
+  currentConditions.push(...conditions)
+}
+
+function mappingConditionDisplay(condition: Record<string, string>) {
+  const label = filters[condition.filter]
+  return `${label}:${condition.operator}${condition.value}`
+}
+</script>
 
 <style scoped>
 .logo {
